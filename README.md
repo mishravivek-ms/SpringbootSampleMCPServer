@@ -36,8 +36,8 @@ A Model Context Protocol (MCP) server implementation built with Spring Boot and 
 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/ecommemcpserver.git
-cd ecommemcpserver
+git clone https://github.com/mishravivek-ms/SpringbootSampleMCPServer.git
+cd SpringbootSampleMCPServer
 ```
 
 2. Build the project
