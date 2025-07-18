@@ -110,6 +110,175 @@ The server exposes the following book management tools:
 - Mathematical operations: `add`, `subtract`, `multiply`, `divide`
 - Date manipulation tools
 
+## 🛠️ Tool Architecture & Extensibility
+
+### **How Easy It Is to Add New LLM Functionality**
+
+One of the most powerful features of this MCP server is how incredibly simple it is to extend functionality for LLMs. The architecture demonstrates a **clean, annotation-driven approach** that requires minimal code to expose new capabilities to AI assistants.
+
+### Tool Implementation Examples
+
+#### 1. **BookTool.java** - Complex Business Logic Made Simple
+```java
+@Component
+public class BookTool {
+    
+    @Autowired
+    private BookService bookService;
+    
+    @Tool(name = "add_book", description = "Add a new book to the library")
+    public String addBook(String bookName, String author, Integer yearOfPublishing, Double price) {
+        // Full validation and business logic
+        Book book = new Book(bookName.trim(), author.trim(), yearOfPublishing, BigDecimal.valueOf(price));
+        Book savedBook = bookService.addBook(book);
+        return String.format("Successfully added book: '%s' by %s...", savedBook.getBookName(), savedBook.getAuthor());
+    }
+    
+    @Tool(name = "search_books_by_author", description = "Search books by author name")
+    public String searchBooksByAuthor(String author) {
+        // Complex database queries made available to LLMs with one annotation
+        List<Book> books = bookService.findBooksByAuthorContaining(author);
+        // ... formatting logic
+    }
+}
+```
+
+**Key Features:**
+- **Full Spring Integration**: Dependency injection, transaction management, validation
+- **Rich Business Logic**: Complex database operations exposed as simple tool calls
+- **Error Handling**: Comprehensive validation and exception handling
+- **Type Safety**: Strong typing with automatic parameter validation
+
+#### 2. **MathTool.java** - Simple Utilities in Seconds
+```java
+public class MathTool {
+    
+    @Tool(name = "add", description = "Adds two numbers")
+    public int add(int a, int b) {
+        return a + b;
+    }
+    
+    @Tool(name = "divide", description = "Divides two numbers")
+    public double divide(int a, int b) {
+        if (b == 0) {
+            throw new IllegalArgumentException("Division by zero is not allowed.");
+        }
+        return (double) a / b;
+    }
+}
+```
+
+**Demonstrates:**
+- **Zero Configuration**: No annotations other than `@Tool` needed
+- **Automatic Type Conversion**: LLM inputs automatically converted to method parameters
+- **Exception Handling**: Java exceptions automatically handled by MCP framework
+
+#### 3. **DateTool.java** - Modern Java API Integration
+```java
+public class DateTool {
+    
+    @Tool(name = "addDays", description = "Adds days to the current date")
+    public LocalDate addDays(int days) {
+        return LocalDate.now().plusDays(days);
+    }
+    
+    @Tool(name = "subtractDays", description = "Subtracts days from the current date")
+    public LocalDate subtractDays(int days) {
+        return LocalDate.now().minusDays(days);
+    }
+}
+```
+
+**Shows:**
+- **Modern Java APIs**: Direct integration with Java 8+ time APIs
+- **Return Type Flexibility**: Any serializable Java type can be returned
+- **Minimal Code**: Maximum functionality with minimal implementation
+
+### Registration Made Simple
+
+In `ExamplemcpserverApplication.java`, registering tools is as easy as:
+
+```java
+@Bean
+public ToolCallbackProvider mathTools() {
+    return MethodToolCallbackProvider.builder()
+            .toolObjects(new MathTool())  // ← Register any POJO
+            .build();
+}
+
+@Bean  
+public ToolCallbackProvider bookTools() {
+    return MethodToolCallbackProvider.builder()
+            .toolObjects(bookTool)        // ← Register Spring-managed beans
+            .build();
+}
+```
+
+### 🚀 **Adding Your Own Tools - 3 Simple Steps**
+
+Want to add weather functionality? Here's how easy it is:
+
+#### Step 1: Create the Tool Class
+```java
+@Component
+public class WeatherTool {
+    
+    @Autowired
+    private WeatherService weatherService;  // Your business logic
+    
+    @Tool(name = "get_current_weather", description = "Get current weather for a city")
+    public String getCurrentWeather(String city) {
+        return weatherService.getWeather(city);
+    }
+    
+    @Tool(name = "get_forecast", description = "Get 5-day weather forecast")
+    public List<WeatherData> getForecast(String city, int days) {
+        return weatherService.getForecast(city, days);
+    }
+}
+```
+
+#### Step 2: Register in Main Application
+```java
+@Bean
+public ToolCallbackProvider weatherTools() {
+    return MethodToolCallbackProvider.builder()
+            .toolObjects(weatherTool)
+            .build();
+}
+```
+
+#### Step 3: That's It! 🎉
+Your weather tools are now available to all LLMs connected to your MCP server. AI assistants can now:
+- Ask: *"What's the weather in Seattle?"*
+- Request: *"Give me a 5-day forecast for Tokyo"*
+- Command: *"Compare weather between London and Paris"*
+
+### 💡 **Why This Architecture Is Powerful**
+
+1. **Zero Boilerplate**: The `@Tool` annotation handles all MCP protocol complexities
+2. **Type Safety**: Compile-time checking of parameters and return types
+3. **Spring Integration**: Full access to dependency injection, AOP, transactions
+4. **Automatic Documentation**: Tool descriptions become part of the MCP schema
+5. **Error Handling**: Java exceptions automatically converted to MCP error responses
+6. **Flexibility**: Support for simple POJOs or complex Spring-managed services
+
+### 🎯 **Real-World Extension Ideas**
+
+With this pattern, you could easily add:
+- **File Operations**: `@Tool` methods for reading, writing, searching files
+- **Email Tools**: Send emails, check inbox, manage contacts
+- **API Integrations**: Weather, news, social media, payment processing
+- **Database Tools**: Query different databases, generate reports
+- **System Tools**: Monitor resources, manage processes, check logs
+- **AI/ML Tools**: Image processing, text analysis, model inference
+
+**Each new capability requires only:**
+- One Java class with `@Tool` annotated methods
+- One bean registration in the main application class
+
+The MCP framework handles everything else - protocol communication, parameter validation, error handling, and making your tools available to AI assistants worldwide!
+
 ## Testing with MCP Inspector
 
 You can use the MCP Inspector client to test and interact with your MCP server:
