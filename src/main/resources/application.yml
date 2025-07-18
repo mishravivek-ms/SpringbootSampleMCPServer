@@ -1,0 +1,52 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: examplemcpserver
+
+  # H2 Database Configuration
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+    
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  ai:
+    mcp:
+      server:
+        enabled: true
+        stdio: false
+        name: examplemcpserver
+        version: 1.0.0
+        description: Example MCP Server with Books Management
+        resourceChangeNotification : true
+        toolChangeNotification : true
+        promptChangeNotification: true
+        sseEndpoint : /mcp/sse
+        sseMessageEndpoint: /mcp/sse/message
+        type: sync
+        capabilities:
+          completion: true
+          prompt: true
+          tool: true
+          resource: true
+
+
+
+
+logging:
+  level:
+    io.modelcontextprotocol: DEBUG
+    org.springframework.ai.mcp: DEBUG
