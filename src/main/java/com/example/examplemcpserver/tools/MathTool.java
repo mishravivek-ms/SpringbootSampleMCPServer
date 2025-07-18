@@ -1,4 +1,4 @@
-package com.example.examplemcpserver;
+package com.example.examplemcpserver.tools;
 
 import org.springframework.ai.tool.annotation.Tool;
 
@@ -26,6 +26,4 @@ public class MathTool {
         }
         return (double) a / b;
     }
-
-
 }

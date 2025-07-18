@@ -1,4 +1,4 @@
-package com.example.examplemcpserver;
+package com.example.examplemcpserver.tools;
 
 import com.example.examplemcpserver.entity.Book;
 import com.example.examplemcpserver.service.BookService;

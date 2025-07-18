@@ -120,6 +120,8 @@ One of the most powerful features of this MCP server is how incredibly simple it
 
 #### 1. **BookTool.java** - Complex Business Logic Made Simple
 ```java
+package com.example.examplemcpserver.tools;
+
 @Component
 public class BookTool {
     
@@ -151,6 +153,8 @@ public class BookTool {
 
 #### 2. **MathTool.java** - Simple Utilities in Seconds
 ```java
+package com.example.examplemcpserver.tools;
+
 public class MathTool {
     
     @Tool(name = "add", description = "Adds two numbers")
@@ -175,6 +179,8 @@ public class MathTool {
 
 #### 3. **DateTool.java** - Modern Java API Integration
 ```java
+package com.example.examplemcpserver.tools;
+
 public class DateTool {
     
     @Tool(name = "addDays", description = "Adds days to the current date")
@@ -199,6 +205,10 @@ public class DateTool {
 In `ExamplemcpserverApplication.java`, registering tools is as easy as:
 
 ```java
+import com.example.examplemcpserver.tools.BookTool;
+import com.example.examplemcpserver.tools.MathTool;
+import com.example.examplemcpserver.tools.DateTool;
+
 @Bean
 public ToolCallbackProvider mathTools() {
     return MethodToolCallbackProvider.builder()
@@ -220,6 +230,8 @@ Want to add weather functionality? Here's how easy it is:
 
 #### Step 1: Create the Tool Class
 ```java
+package com.example.examplemcpserver.tools;
+
 @Component
 public class WeatherTool {
     
@@ -240,6 +252,8 @@ public class WeatherTool {
 
 #### Step 2: Register in Main Application
 ```java
+import com.example.examplemcpserver.tools.WeatherTool;
+
 @Bean
 public ToolCallbackProvider weatherTools() {
     return MethodToolCallbackProvider.builder()
@@ -482,9 +496,10 @@ src/
 │   │       │   └── DataInitializer.java
 │   │       ├── exception/
 │   │       │   └── GlobalExceptionHandler.java
-│   │       ├── BookTool.java
-│   │       ├── MathTool.java
-│   │       ├── DateTool.java
+│   │       ├── tools/
+│   │       │   ├── BookTool.java
+│   │       │   ├── MathTool.java
+│   │       │   └── DateTool.java
 │   │       └── ExamplemcpserverApplication.java
 │   └── resources/
 │       └── application.yml
@@ -495,7 +510,10 @@ src/
 - **Book Entity**: JPA entity with validation annotations
 - **BookRepository**: Spring Data JPA repository with custom queries
 - **BookService**: Business logic layer with transaction management
-- **BookTool**: MCP tool implementations for book operations
+- **Tools Package**: Contains all MCP tool implementations
+  - **BookTool**: Book management operations (CRUD, search, analytics)
+  - **MathTool**: Mathematical operations for LLM calculations
+  - **DateTool**: Date manipulation utilities
 - **DataInitializer**: Automatic sample data loading
 - **GlobalExceptionHandler**: Centralized error handling
 
@@ -516,9 +534,10 @@ Navigate to `http://localhost:8081/h2-console` with:
 
 ### Adding New Tools
 
-1. Create methods in appropriate tool classes (e.g., `BookTool.java`)
+1. Create methods in appropriate tool classes in the `tools` package (e.g., `BookTool.java`, `MathTool.java`, `DateTool.java`)
 2. Annotate with `@Tool(name = "tool_name", description = "description")`
 3. Register the tool in `ExamplemcpserverApplication.java`
+4. Import the tool class: `import com.example.examplemcpserver.tools.YourToolClass;`
 
 ## Error Handling
 

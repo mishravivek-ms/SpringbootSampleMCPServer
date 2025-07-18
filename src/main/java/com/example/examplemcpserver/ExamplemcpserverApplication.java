@@ -1,5 +1,8 @@
 package com.example.examplemcpserver;
 
+import com.example.examplemcpserver.tools.BookTool;
+import com.example.examplemcpserver.tools.DateTool;
+import com.example.examplemcpserver.tools.MathTool;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.beans.factory.annotation.Autowired;
